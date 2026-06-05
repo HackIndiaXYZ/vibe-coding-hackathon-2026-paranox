@@ -1,0 +1,6 @@
+{
+  "name": "Omni-Sim Tactical",
+  "description": "High-fidelity futuristic tactical simulation console for education, restaurant, agriculture, and healthcare systems.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
