@@ -307,27 +307,27 @@ end`);
           </h1>
           
           <p className="text-lg sm:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed font-medium opacity-90">
-            Turn any business idea into a living simulation. Test strategies, manage resources, and scale your venture with a board of specialized AI advisors.
+            Launch a virtual startup, allocate funding, manage operations, receive AI guidance,and watch your company grow or fail based on every decision you make.
           </p>
 
           {/* 3-Step Visual Process */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-4xl mx-auto pt-10 pb-4 relative">
             {[
-              { 
-                title: "Define Venture", 
-                desc: "Configure your industry, budget, and strategic LUA constraints.",
-                icon: Layers
-              },
-              { 
-                title: "Launch AI Board", 
-                desc: "Initialize specialized advisors to manage finance, R&D, and growth.",
-                icon: Users
-              },
-              { 
-                title: "Run Simulation", 
-                desc: "Monitor live telemetry and execute directives to scale your empire.",
-                icon: TrendingUp
-              }
+                {
+                  title: "Choose Industry",
+                  desc: "Select Education, Agriculture, Healthcare, or Restaurant and define your startup vision.",
+                  icon: Layers
+                },
+                {
+                  title: "Make Decisions",
+                  desc: "Allocate funding, expand operations, hire teams, and manage business growth.",
+                  icon: Users
+                },
+                {
+                 title: "See Outcomes",
+                  desc: "Track valuation, profits, market share, and receive AI-driven recommendations.",
+                  icon: TrendingUp
+                }
             ].map((step, i) => (
               <motion.div 
                 key={i}
@@ -359,7 +359,7 @@ end`);
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </button>
             <button
-              onClick={() => scrollToSection("features")}
+              onClick={() => scrollToSection("business-scenarios")}
               className="w-full sm:w-auto px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-full transition-all cursor-pointer"
             >
               How it works
@@ -372,7 +372,7 @@ end`);
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="-mt-12 w-full max-w-6xl relative z-10"
+          className="mt-8 w-full max-w-6xl relative z-10"
         >
           <div className="absolute -inset-4 bg-gradient-to-r from-[#ff7a00]/10 to-[#eab308]/10 blur-3xl opacity-20 rounded-3xl"></div>
           <div className="relative glass-panel rounded-3xl overflow-hidden border border-white/10 shadow-3xl flex flex-col lg:flex-row h-auto lg:h-[420px]">
@@ -421,7 +421,7 @@ end`);
                   <span className="text-[10px] font-bold text-[#ff7a00] uppercase">Advisor Insight</span>
                 </div>
                 <p className="text-[11px] text-neutral-400 leading-relaxed font-medium">
-                  Liquidity reserves nominal. Recommendation: Increase R&D spend to maintain market velocity.
+                  Market demand increased by 18%. Recommendation: Invest $50,000 in expansion to capture new customers before competitors.
                 </p>
               </div>
             </div>
@@ -739,6 +739,64 @@ end`);
           </div>
         </div>
       </section>
+
+      {/* NEW BUSINESS SCENARIOS SECTION */}
+      <section 
+      id="business-scenarios"
+      className="relative z-10 max-w-7xl mx-auto px-6 py-24">
+  <div className="text-center mb-16">
+    <h2 className="text-4xl font-bold text-white mb-4">
+      Explore Business Scenarios
+    </h2>
+    <p className="text-neutral-400">
+      Simulate different industries and discover how your decisions impact growth.
+    </p>
+  </div>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+    <motion.div
+  whileHover={{ y: -8 }}
+  className="glass-panel p-6 rounded-2xl cursor-pointer hover:border-brand-orange/30 transition-all duration-300"
+>
+  <h3 className="text-white font-bold mb-2">🎓 Education Startup</h3>
+  <p className="text-neutral-400 text-sm">
+    Manage student growth, retention, and infrastructure investments.
+  </p>
+</motion.div>
+
+    <motion.div
+  whileHover={{ y: -8 }}
+  className="glass-panel p-6 rounded-2xl cursor-pointer hover:border-brand-orange/30 transition-all duration-300"
+>
+  <h3 className="text-white font-bold mb-2">🌾 Agriculture Company</h3>
+  <p className="text-neutral-400 text-sm">
+    Optimize crop yields, water reserves, and automation systems.
+  </p>
+</motion.div>
+
+    <motion.div
+  whileHover={{ y: -8 }}
+  className="glass-panel p-6 rounded-2xl cursor-pointer hover:border-brand-orange/30 transition-all duration-300"
+>
+  <h3 className="text-white font-bold mb-2">🍽 Restaurant Chain</h3>
+  <p className="text-neutral-400 text-sm">
+    Balance customer demand, staffing, and operational efficiency.
+  </p>
+</motion.div>
+
+    <motion.div
+  whileHover={{ y: -8 }}
+  className="glass-panel p-6 rounded-2xl cursor-pointer hover:border-brand-orange/30 transition-all duration-300"
+>
+  <h3 className="text-white font-bold mb-2">🏥 Healthcare Venture</h3>
+  <p className="text-neutral-400 text-sm">
+    Improve patient throughput, research progress, and healthcare outcomes.
+  </p>
+</motion.div>
+
+  </div>
+</section>
 
       {/* 4. CREATION FORM SECTION */}
       <section id="creation-form" className="relative z-10 max-w-5xl mx-auto px-6 py-32">
