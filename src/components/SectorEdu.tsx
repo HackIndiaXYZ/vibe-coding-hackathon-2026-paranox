@@ -115,10 +115,24 @@ export default function SectorEdu({ stats, logs, onChangeStat, loading }: Sector
               </div>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter">Finance Advisory</p>
-                  <p className="text-xs text-neutral-300 leading-relaxed italic border-l-2 border-brand-orange/30 pl-3">
-                    &ldquo;{stats.financeStrategy || "Reallocating treasury for infrastructure expansion."}&rdquo;
+                  <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter">
+                    Finance Advisory
                   </p>
+
+                  <div
+                    className={`p-3 rounded-xl border ${
+                      stats.financeStrategy?.includes("CRITICAL")
+                        ? "border-red-500 bg-red-500/10 animate-pulse"
+                        : stats.financeStrategy?.includes("HEALTHY")
+                        ? "border-emerald-500 bg-emerald-500/10"
+                        : "border-yellow-500 bg-yellow-500/10"
+                    }`}
+                  >
+                    <p className="text-xs text-white leading-relaxed font-medium">
+                      {stats.financeStrategy ||
+                        "Liquidity levels stable. Maintain current strategy."}
+                    </p>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-tighter">HR Insights</p>
