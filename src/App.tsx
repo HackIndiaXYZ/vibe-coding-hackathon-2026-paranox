@@ -71,9 +71,6 @@ export default function App() {
     "&gt; [13:58] LIQUIDITY MATRIX SECURED AT 84%.",
     "&gt; [13:45] RESEARCH COEFFICIENT NOMINAL [PEAK_OUTPUT_01].",
   ]);
-  const [restLogs, setRestLogs] = useState<string[]>([]);
-  const [agriLogs, setAgriLogs] = useState<string[]>([]);
-  const [healthLogs, setHealthLogs] = useState<string[]>([]);
 
   const [simulationLoading, setSimulationLoading] = useState(false);
   const [toasts, setToasts] = useState<{ id: number; message: string; type: "success" | "info" }[]>([]);
@@ -154,15 +151,7 @@ export default function App() {
     });
 
     if (data.logs && data.logs.length > 0) {
-      const logSetter = {
-        EDUCATION: setEduLogs,
-        RESTAURANT: setRestLogs,
-        AGRICULTURE: setAgriLogs,
-        HEALTHCARE: setHealthLogs,
-      }[activeSector];
-      if (logSetter) {
-        logSetter((prev) => [...data.logs, ...prev].slice(0, 10));
-      }
+      setEduLogs((prev) => [...data.logs, ...prev].slice(0, 10));
     }
     addToast("Data Synchronized", "success");
   };
@@ -362,11 +351,41 @@ export default function App() {
                         logs={eduLogs}
                         loading={simulationLoading}
                         onChangeStat={(updater) =>
-                          setSimulationStats((prev) => ({
-                            ...prev,
-                            educationLiquidity: updater.liquidity ?? prev.educationLiquidity,
-                            educationRetention: updater.retention ?? prev.educationRetention,
-                          }))
+                          setSimulationStats((prev) => {
+                            const liquidity =
+                              updater.liquidity !== undefined
+                                ? updater.liquidity
+                                : prev.educationLiquidity;
+
+                            const retention =
+                              updater.retention !== undefined
+                                ? updater.retention
+                                : prev.educationRetention;
+
+                            const valuation =
+                              10 + (retention * 0.2) + (liquidity * 0.15);
+                            
+                              let financeAdvice = "";
+
+                              if (liquidity < 40) {
+                                financeAdvice =
+                                  "🚨 CRITICAL ALERT: Liquidity reserves critically low. Reduce spending immediately.";
+                              } else if (liquidity > 80) {
+                                financeAdvice =
+                                  "🟢 SYSTEM HEALTHY: Strong liquidity position. Expansion recommended.";
+                              } else {
+                                financeAdvice =
+                                  "🟡 MONITORING: Liquidity levels stable. Maintain current strategy.";
+                              }
+
+                            return {
+                              ...prev,
+                              educationLiquidity: liquidity,
+                              educationRetention: retention,
+                              educationFinanceStrategy: financeAdvice,
+                              totalEvaluation: `$${valuation.toFixed(1)}M`,
+                            };
+                          })
                         }
                       />
                     </motion.div>
@@ -389,17 +408,48 @@ export default function App() {
                           kitchenLoad: simulationStats.restaurantKitchenLoad,
                           totalEvaluation: simulationStats.totalEvaluation,
                         }}
-                        logs={restLogs}
+                        logs={eduLogs}
                         loading={simulationLoading}
                         onChangeStat={(updater) =>
-                          setSimulationStats((prev) => ({
+                        setSimulationStats((prev) => {
+                          const revenue =
+                            updater.revenueVelocity !== undefined
+                              ? updater.revenueVelocity
+                              : prev.restaurantRevenueVelocity;
+
+                          const protein =
+                            updater.proteinFreshness !== undefined
+                              ? updater.proteinFreshness
+                              : prev.restaurantProteinFreshness;
+
+                          const produce =
+                            updater.produceFreshness !== undefined
+                              ? updater.produceFreshness
+                              : prev.restaurantProduceFreshness;
+
+                          const kitchen =
+                            updater.kitchenLoad !== undefined
+                              ? updater.kitchenLoad
+                              : prev.restaurantKitchenLoad;
+
+                          const freshness = (protein + produce) / 2;
+
+                          const valuation =
+                            15 +
+                            revenue / 1000 +
+                            freshness * 0.15 -
+                            kitchen * 0.05;
+
+                          return {
                             ...prev,
-                            restaurantRevenueVelocity: updater.revenueVelocity !== undefined ? updater.revenueVelocity : prev.restaurantRevenueVelocity,
-                            restaurantProteinFreshness: updater.proteinFreshness !== undefined ? updater.proteinFreshness : prev.restaurantProteinFreshness,
-                            restaurantProduceFreshness: updater.produceFreshness !== undefined ? updater.produceFreshness : prev.restaurantProduceFreshness,
-                            restaurantKitchenLoad: updater.kitchenLoad !== undefined ? updater.kitchenLoad : prev.restaurantKitchenLoad,
-                          }))
-                        }
+                            restaurantRevenueVelocity: revenue,
+                            restaurantProteinFreshness: protein,
+                            restaurantProduceFreshness: produce,
+                            restaurantKitchenLoad: kitchen,
+                            totalEvaluation: `$${valuation.toFixed(1)}M`,
+                          };
+                        })
+                      }
                       />
                     </motion.div>
                   )}
@@ -421,16 +471,46 @@ export default function App() {
                           cropYieldDelta: simulationStats.agricultureCropYieldDelta,
                           totalEvaluation: simulationStats.totalEvaluation,
                         }}
-                        logs={agriLogs}
+                        logs={eduLogs}
                         loading={simulationLoading}
                         onChangeStat={(updater) =>
-                          setSimulationStats((prev) => ({
-                            ...prev,
-                            agricultureWaterReserves: updater.waterReserves ?? prev.agricultureWaterReserves,
-                            agricultureHydroponicCount: updater.hydroponicCount ?? prev.agricultureHydroponicCount,
-                            agricultureHarvestDronesCount: updater.harvestDronesCount ?? prev.agricultureHarvestDronesCount,
-                            cropYieldDelta: updater.cropYieldDelta ?? prev.agricultureCropYieldDelta,
-                          }))
+                          setSimulationStats((prev) => {
+                            const water =
+                              updater.waterReserves !== undefined
+                                ? updater.waterReserves
+                                : prev.agricultureWaterReserves;
+
+                            const hydroponics =
+                              updater.hydroponicCount !== undefined
+                                ? updater.hydroponicCount
+                                : prev.agricultureHydroponicCount;
+
+                            const drones =
+                              updater.harvestDronesCount !== undefined
+                                ? updater.harvestDronesCount
+                                : prev.agricultureHarvestDronesCount;
+
+                            const yieldDelta =
+                              updater.cropYieldDelta !== undefined
+                                ? updater.cropYieldDelta
+                                : prev.agricultureCropYieldDelta;
+
+                            const valuation =
+                              15 +
+                              water * 0.15 +
+                              yieldDelta * 1.5 +
+                              hydroponics / 150 +
+                              drones * 0.1;
+
+                            return {
+                              ...prev,
+                              agricultureWaterReserves: water,
+                              agricultureHydroponicCount: hydroponics,
+                              agricultureHarvestDronesCount: drones,
+                              agricultureCropYieldDelta: yieldDelta,
+                              totalEvaluation: `$${valuation.toFixed(1)}M`,
+                            };
+                          })
                         }
                       />
                     </motion.div>
