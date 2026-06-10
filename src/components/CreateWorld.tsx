@@ -46,14 +46,90 @@ const Sparkline = ({ color = "#ff7a00" }: { color?: string }) => {
   );
 };
 
+interface DemoSectorData {
+  title: string;
+  valuation: string;
+  progressPercent: number;
+  revenueGrowth: string;
+  revenueGrowthPercent: string;
+  metrics: { label: string; value: string; color: string }[];
+  advisorInsight: string;
+  chartColor: string;
+  pathD: string;
+}
+
+const DEMO_SECTORS: Record<string, DemoSectorData> = {
+  EDUCATION: {
+    title: "Education Startup",
+    valuation: "$2.4M",
+    progressPercent: 65,
+    revenueGrowth: "+$240K",
+    revenueGrowthPercent: "↑ 18%",
+    metrics: [
+      { label: "Classroom Liquidity", value: "84%", color: "text-[#ff7a00]" },
+      { label: "Student Retention", value: "92%", color: "text-amber-400" },
+      { label: "Course Completion", value: "76%", color: "text-emerald-400" }
+    ],
+    advisorInsight: "Cognitive core recommends reallocating reserve capital to smart classroom infrastructure and R&D chipsets.",
+    chartColor: "#ff7a00",
+    pathD: "M0,120 Q50,110 80,80 T150,90 T220,40 T300,60 T400,10"
+  },
+  AGRICULTURE: {
+    title: "Agriculture Company",
+    valuation: "$3.2M",
+    progressPercent: 72,
+    revenueGrowth: "+$410K",
+    revenueGrowthPercent: "↑ 22%",
+    metrics: [
+      { label: "Water Reserves", value: "82.5%", color: "text-emerald-400" },
+      { label: "Active Hydroponics", value: "1,204 Units", color: "text-[#ff7a00]" },
+      { label: "Harvest Drones", value: "42 Units", color: "text-amber-400" }
+    ],
+    advisorInsight: "Biosystems analysis indicates crop yield delta stable. Maintain water pressure at optimal thresholds.",
+    chartColor: "#10b981",
+    pathD: "M0,130 Q60,100 120,110 T240,60 T360,40 T400,20"
+  },
+  RESTAURANT: {
+    title: "Restaurant Chain",
+    valuation: "$0.9M",
+    progressPercent: 48,
+    revenueGrowth: "+$95K",
+    revenueGrowthPercent: "↑ 12%",
+    metrics: [
+      { label: "Revenue Velocity", value: "$14,280/hr", color: "text-[#ff7a00]" },
+      { label: "Kitchen Load", value: "62%", color: "text-amber-400" },
+      { label: "Protein Freshness", value: "94%", color: "text-emerald-400" }
+    ],
+    advisorInsight: "Culinary advisor detects high table turnover. Optimize scheduling to balance customer demand with operational load.",
+    chartColor: "#eab308",
+    pathD: "M0,140 Q40,90 90,120 T180,70 T280,100 T400,30"
+  },
+  HEALTHCARE: {
+    title: "Healthcare Venture",
+    valuation: "$8.5M",
+    progressPercent: 88,
+    revenueGrowth: "+$1.8M",
+    revenueGrowthPercent: "↑ 31%",
+    metrics: [
+      { label: "Bio-Analyzers", value: "94% Eff.", color: "text-emerald-400" },
+      { label: "Daily Throughput", value: "1,450 Patients", color: "text-[#ff7a00]" },
+      { label: "Research Progress", value: "78%", color: "text-amber-400" }
+    ],
+    advisorInsight: "Active synthesis of folding sequences in progress. Diagnostic neural link optimal and sterility level verified at Grade A+.",
+    chartColor: "#22d3ee",
+    pathD: "M0,100 Q80,120 160,50 T280,30 T360,60 T400,15"
+  }
+};
+
 // Sub-component for a professional growth chart visual
-const GrowthChart = () => {
+const GrowthChart = ({ sector = "EDUCATION", showLegend = true }: { sector?: keyof typeof DEMO_SECTORS; showLegend?: boolean }) => {
+  const data = DEMO_SECTORS[sector];
   return (
     <div className="relative w-full h-full p-4 flex flex-col justify-between">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h4 className="text-[10px] font-semibold text-neutral-500 uppercase tracking-widest">Revenue Growth</h4>
-          <p className="text-xl font-bold text-white">+$1.2M <span className="text-[10px] text-emerald-400 font-normal ml-1">↑ 24%</span></p>
+          <p className="text-xl font-bold text-white">{data.revenueGrowth} <span className="text-[10px] text-emerald-400 font-normal ml-1">{data.revenueGrowthPercent}</span></p>
         </div>
         <div className="flex gap-1">
           {[1, 2, 3].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-neutral-800" />)}
@@ -62,46 +138,49 @@ const GrowthChart = () => {
       <div className="flex-1 relative mt-2">
         <svg viewBox="0 0 400 150" className="w-full h-full overflow-visible">
           <defs>
-            <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ff7a00" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#ff7a00" stopOpacity="0" />
+            <linearGradient id={`chartGradient-${sector}`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor={data.chartColor} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={data.chartColor} stopOpacity="0" />
             </linearGradient>
           </defs>
           <path
-            d="M0,120 Q50,110 80,80 T150,90 T220,40 T300,60 T400,10"
+            d={data.pathD}
             fill="none"
-            stroke="#ff7a00"
+            stroke={data.chartColor}
             strokeWidth="3"
             strokeLinecap="round"
           />
           <path
-            d="M0,120 Q50,110 80,80 T150,90 T220,40 T300,60 T400,10 V150 H0 Z"
-            fill="url(#chartGradient)"
+            d={`${data.pathD} V150 H0 Z`}
+            fill={`url(#chartGradient-${sector})`}
           />
           {/* Pulsing data points */}
-          <circle cx="220" cy="40" r="4" fill="#ff7a00">
+          <circle cx="220" cy="40" r="4" fill={data.chartColor}>
             <animate attributeName="r" values="4;6;4" dur="2s" repeatCount="indefinite" />
           </circle>
         </svg>
       </div>
-      <div className="flex justify-between mt-4 border-t border-white/5 pt-3">
-        <div className="flex gap-4">
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-[#ff7a00]"></div>
-            <span className="text-[9px] text-neutral-400 font-medium">Actual</span>
+      {showLegend && (
+        <div className="flex justify-between mt-4 border-t border-white/5 pt-3">
+          <div className="flex gap-4">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: data.chartColor }}></div>
+              <span className="text-[9px] text-neutral-400 font-medium">Actual</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-full bg-neutral-700"></div>
+              <span className="text-[9px] text-neutral-400 font-medium">Projected</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-2 h-2 rounded-full bg-neutral-700"></div>
-            <span className="text-[9px] text-neutral-400 font-medium">Projected</span>
-          </div>
+          <span className="text-[9px] text-neutral-500 font-mono tracking-tighter">Q4 FORECAST ACTIVE</span>
         </div>
-        <span className="text-[9px] text-neutral-500 font-mono tracking-tighter">Q4 FORECAST ACTIVE</span>
-      </div>
+      )}
     </div>
   );
 };
 
 export default function CreateWorld({ onInitialize }: CreateWorldProps) {
+  const [demoSector, setDemoSector] = useState<keyof typeof DEMO_SECTORS>("EDUCATION");
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const { scrollY } = useScroll();
 
@@ -150,9 +229,28 @@ end`);
     METRICS_BIO: "Healthcare (Biotech Systems)",
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Save the user's session details to Excel before launching
+    try {
+      await fetch("/api/save-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyName: name || "Unnamed Venture",
+          ceoEmail: uplink || "—",
+          industrySector: domainLabels[domain] || domain,
+          initialBudget,
+          landScale,
+          verticalLimit,
+        }),
+      });
+    } catch (err) {
+      // Non-blocking — session still launches even if save fails
+      console.warn("Could not save session to Excel:", err);
+    }
 
     setTimeout(() => {
       let nextSector: Sector = "EDUCATION";
@@ -375,39 +473,69 @@ end`);
           className="mt-8 w-full max-w-6xl relative z-10"
         >
           <div className="absolute -inset-4 bg-gradient-to-r from-[#ff7a00]/10 to-[#eab308]/10 blur-3xl opacity-20 rounded-3xl"></div>
-          <div className="relative glass-panel rounded-3xl overflow-hidden border border-white/10 shadow-3xl flex flex-col lg:flex-row h-auto lg:h-[420px]">
+          <div className="relative glass-panel rounded-3xl overflow-hidden border border-white/10 shadow-3xl flex flex-col lg:flex-row h-auto lg:h-[450px]">
             {/* Main Content Area */}
-            <div className="flex-[3] p-1 border-r border-white/5 bg-gradient-to-br from-white/[0.03] to-transparent">
+            <div className="flex-[3] p-1 border-r border-white/5 bg-gradient-to-br from-white/[0.03] to-transparent flex flex-col">
               <div className="h-full w-full rounded-[20px] overflow-hidden flex flex-col">
-                <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
+                <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20 flex-wrap gap-4">
                   <div className="flex gap-4">
                     <div className="px-3 py-1 rounded bg-white/5 border border-white/10 text-[10px] font-mono text-neutral-400 uppercase tracking-tighter">Model v2.04</div>
                     <div className="px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-400 uppercase tracking-tighter">Live Syncing</div>
                   </div>
                   <div className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Global Market Area Reach</div>
                 </div>
-                <div className="flex-1 bg-black/40">
-                  <GrowthChart />
+
+                {/* Sector Selector Tabs Bar */}
+                <div className="px-6 py-3 border-b border-white/5 bg-black/30 flex justify-between items-center flex-wrap gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest">Select Sector Demo:</span>
+                    <div className="flex rounded-lg bg-neutral-900/60 p-0.5 border border-white/5">
+                      {(Object.keys(DEMO_SECTORS) as Array<keyof typeof DEMO_SECTORS>).map((sec) => (
+                        <button
+                          key={sec}
+                          type="button"
+                          onClick={() => setDemoSector(sec)}
+                          className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md tracking-wider transition-all cursor-pointer ${
+                            demoSector === sec
+                              ? "bg-[#ff7a00] text-black shadow-md shadow-[#ff7a00]/10 font-extrabold"
+                              : "text-neutral-400 hover:text-white"
+                          }`}
+                        >
+                          {sec === "EDUCATION" ? "Education" : sec === "AGRICULTURE" ? "Agriculture" : sec === "RESTAURANT" ? "Restaurant" : "Healthcare"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 px-3 py-1 rounded bg-[#ff7a00]/10 border border-[#ff7a00]/20">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#ff7a00] animate-pulse" />
+                    <span className="text-[9px] font-mono text-[#ff7a00] font-bold uppercase tracking-widest">Simulated Preview</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 bg-black/40 min-h-[220px]">
+                  <GrowthChart sector={demoSector} />
                 </div>
               </div>
             </div>
             
             {/* Sidebar Stats Area */}
-            <div className="flex-1 p-8 flex flex-col gap-8 bg-black/40">
+            <div className="flex-1 p-8 flex flex-col gap-8 bg-black/40 justify-between">
               <div className="space-y-2">
                 <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Active Valuation</span>
-                <p className="text-3xl font-display font-extrabold text-white tracking-tight">$42.8M</p>
+                <p className="text-3xl font-display font-extrabold text-white tracking-tight">{DEMO_SECTORS[demoSector].valuation}</p>
                 <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#ff7a00] w-[65%]"></div>
+                  <motion.div 
+                    className="h-full bg-[#ff7a00]" 
+                    style={{ backgroundColor: DEMO_SECTORS[demoSector].chartColor }}
+                    animate={{ width: `${DEMO_SECTORS[demoSector].progressPercent}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
                 </div>
               </div>
               
               <div className="space-y-6">
-                {[
-                  { label: "Market Share", value: "24.5%", color: "text-[#ff7a00]" },
-                  { label: "Efficiency", value: "92%", color: "text-amber-400" },
-                  { label: "Growth Rate", value: "+14.2%", color: "text-emerald-400" }
-                ].map((stat, i) => (
+                {DEMO_SECTORS[demoSector].metrics.map((stat, i) => (
                   <div key={i} className="flex justify-between items-center group cursor-default">
                     <span className="text-sm font-medium text-neutral-400 group-hover:text-neutral-300 transition-colors">{stat.label}</span>
                     <span className={`text-sm font-bold ${stat.color}`}>{stat.value}</span>
@@ -415,13 +543,19 @@ end`);
                 ))}
               </div>
               
-              <div className="mt-auto p-4 rounded-2xl bg-[#ff7a00]/5 border border-[#ff7a00]/20">
+              <div 
+                className="mt-auto p-4 rounded-2xl border transition-all duration-300"
+                style={{ 
+                  borderColor: `${DEMO_SECTORS[demoSector].chartColor}33`, 
+                  backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}0d` 
+                }}
+              >
                 <div className="flex items-center gap-2 mb-2">
-                  <ShieldCheck className="w-4 h-4 text-[#ff7a00]" />
-                  <span className="text-[10px] font-bold text-[#ff7a00] uppercase">Advisor Insight</span>
+                  <ShieldCheck className="w-4 h-4" style={{ color: DEMO_SECTORS[demoSector].chartColor }} />
+                  <span className="text-[10px] font-bold uppercase" style={{ color: DEMO_SECTORS[demoSector].chartColor }}>Advisor Insight</span>
                 </div>
                 <p className="text-[11px] text-neutral-400 leading-relaxed font-medium">
-                  Market demand increased by 18%. Recommendation: Invest $50,000 in expansion to capture new customers before competitors.
+                  {DEMO_SECTORS[demoSector].advisorInsight}
                 </p>
               </div>
             </div>
@@ -492,47 +626,59 @@ end`);
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Left: Treasury AI Mock */}
             <div className="lg:col-span-4 flex flex-col gap-8">
-              <div className="glass-panel p-8 rounded-3xl flex-1 flex flex-col justify-between group hover:border-brand-orange/30 transition-all duration-500">
+              <div 
+                className="glass-panel p-8 rounded-3xl flex-1 flex flex-col justify-between group transition-all duration-500"
+                style={{
+                  borderColor: `${DEMO_SECTORS[demoSector].chartColor}1a`
+                }}
+              >
                 <div className="space-y-6">
                   <div className="flex justify-between items-center">
-                    <div className="w-12 h-12 rounded-2xl bg-brand-orange/10 flex items-center justify-center border border-brand-orange/20 group-hover:scale-110 transition-transform">
-                      <Wallet className="w-6 h-6 text-brand-orange" />
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center border group-hover:scale-110 transition-transform" style={{ backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}1a`, borderColor: `${DEMO_SECTORS[demoSector].chartColor}33` }}>
+                      <Wallet className="w-6 h-6" style={{ color: DEMO_SECTORS[demoSector].chartColor }} />
                     </div>
-                    <div className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[9px] font-bold text-emerald-500 uppercase tracking-widest">
-                      Optimal
+                    <div className="px-3 py-1 rounded-full border text-[9px] font-bold uppercase tracking-widest" style={{ color: DEMO_SECTORS[demoSector].chartColor, borderColor: `${DEMO_SECTORS[demoSector].chartColor}33`, backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}10` }}>
+                      {DEMO_SECTORS[demoSector].metrics[2]?.value || "Optimal"}
                     </div>
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-white mb-2">Treasury AI</h3>
                     <p className="text-sm text-neutral-400 leading-relaxed font-medium">
-                      Autonomous liquidity management. Reallocating $2.4M for Q4 expansion.
+                      Autonomous liquidity management. Reallocating dynamic resources for {DEMO_SECTORS[demoSector].title}.
                     </p>
                   </div>
                 </div>
                 <div className="pt-8 space-y-4">
                   <div className="flex justify-between items-center text-[10px] font-bold text-neutral-500 uppercase tracking-widest">
-                    <span>Reserve Ratio</span>
-                    <span className="text-white">84.2%</span>
+                    <span>{DEMO_SECTORS[demoSector].metrics[0].label}</span>
+                    <span className="text-white">{DEMO_SECTORS[demoSector].metrics[0].value}</span>
                   </div>
                   <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                     <motion.div 
                       initial={{ width: "0%" }}
-                      whileInView={{ width: "84.2%" }}
+                      animate={{ width: DEMO_SECTORS[demoSector].metrics[0].value.includes("%") ? DEMO_SECTORS[demoSector].metrics[0].value : "75%" }}
                       transition={{ duration: 1.5, ease: "easeOut" }}
-                      className="h-full bg-brand-orange shadow-[0_0_10px_rgba(255,122,0,0.5)]"
+                      className="h-full"
+                      style={{ backgroundColor: DEMO_SECTORS[demoSector].chartColor }}
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="glass-panel p-8 rounded-3xl bg-emerald-500/[0.02] border-emerald-500/10 group hover:border-emerald-500/30 transition-all duration-500">
+              <div 
+                className="glass-panel p-8 rounded-3xl border transition-all duration-500"
+                style={{ 
+                  backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}03`, 
+                  borderColor: `${DEMO_SECTORS[demoSector].chartColor}1a` 
+                }}
+              >
                 <div className="flex items-center gap-4 mb-4">
-                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
-                    <TrendingUp className="w-5 h-5 text-emerald-500" />
+                   <div className="w-10 h-10 rounded-xl flex items-center justify-center border" style={{ backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}1a`, borderColor: `${DEMO_SECTORS[demoSector].chartColor}33` }}>
+                    <TrendingUp className="w-5 h-5" style={{ color: DEMO_SECTORS[demoSector].chartColor }} />
                    </div>
                    <div>
                     <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest leading-none mb-1">Growth Forecast</p>
-                    <p className="text-white font-bold text-sm">+18.4% YoY</p>
+                    <p className="text-white font-bold text-sm">{DEMO_SECTORS[demoSector].revenueGrowthPercent} YoY</p>
                    </div>
                 </div>
                 <div className="h-16 flex items-end gap-1 px-4 bg-black/20 rounded-2xl overflow-hidden">
@@ -540,9 +686,10 @@ end`);
                     <motion.div 
                       key={i}
                       initial={{ height: 0 }}
-                      whileInView={{ height: `${h * 100}%` }}
+                      animate={{ height: `${h * 100}%` }}
                       transition={{ duration: 0.5, delay: i * 0.05 }}
-                      className="flex-1 bg-emerald-500/40 rounded-t-sm"
+                      className="flex-1 rounded-t-sm"
+                      style={{ backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}66` }}
                     />
                   ))}
                 </div>
@@ -552,11 +699,11 @@ end`);
             {/* Center: Main Preview Console */}
             <div className="lg:col-span-5 flex flex-col">
               <div className="glass-panel rounded-3xl overflow-hidden flex-1 relative group bg-[#080808]">
-                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-orange/30 to-transparent"></div>
+                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-orange/30 to-transparent" style={{ backgroundImage: `linear-gradient(to right, transparent, ${DEMO_SECTORS[demoSector].chartColor}4d, transparent)` }}></div>
                  <div className="p-8 h-full flex flex-col">
                     <div className="flex justify-between items-center mb-10">
                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-brand-orange animate-pulse"></div>
+                          <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: DEMO_SECTORS[demoSector].chartColor }}></div>
                           <span className="text-[10px] font-mono font-bold text-neutral-500 uppercase tracking-[0.2em]">Simulation Container Live</span>
                        </div>
                        <Cpu className="w-4 h-4 text-neutral-700" />
@@ -566,24 +713,24 @@ end`);
                        <div className="space-y-2">
                           <p className="text-[11px] font-bold text-neutral-500 uppercase tracking-widest">Active Venture Valuation</p>
                           <p className="text-6xl sm:text-7xl font-display font-extrabold text-white tracking-tighter">
-                            <CountUp value={42.8} prefix="$" suffix="M" duration={2000} />
+                            <CountUp value={parseFloat(DEMO_SECTORS[demoSector].valuation.replace(/[^0-9.]/g, ''))} prefix="$" suffix="M" duration={2000} />
                           </p>
                        </div>
                        
-                       <div className="w-full h-[200px] relative">
-                          <div className="absolute inset-0 bg-brand-orange/5 blur-3xl rounded-full opacity-50"></div>
-                          <GrowthChart />
+                       <div className="w-full h-[180px] relative">
+                          <div className="absolute inset-0 blur-3xl rounded-full opacity-50 transition-colors duration-300" style={{ backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}0a` }}></div>
+                          <GrowthChart sector={demoSector} showLegend={false} />
                        </div>
                     </div>
 
                     <div className="mt-auto grid grid-cols-2 gap-4">
                        <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col items-center justify-center text-center">
-                          <span className="text-[9px] font-bold text-neutral-600 uppercase tracking-tighter mb-1">Efficiency</span>
-                          <span className="text-lg font-bold text-white tracking-tight">94.2%</span>
+                          <span className="text-[9px] font-bold text-neutral-600 uppercase tracking-tighter mb-1">{DEMO_SECTORS[demoSector].metrics[0].label}</span>
+                          <span className="text-lg font-bold text-white tracking-tight">{DEMO_SECTORS[demoSector].metrics[0].value}</span>
                        </div>
                        <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col items-center justify-center text-center">
-                          <span className="text-[9px] font-bold text-neutral-600 uppercase tracking-tighter mb-1">Stability</span>
-                          <span className="text-lg font-bold text-emerald-500 tracking-tight">Optimal</span>
+                          <span className="text-[9px] font-bold text-neutral-600 uppercase tracking-tighter mb-1">{DEMO_SECTORS[demoSector].metrics[1].label}</span>
+                          <span className="text-lg font-bold tracking-tight animate-pulse" style={{ color: DEMO_SECTORS[demoSector].chartColor }}>{DEMO_SECTORS[demoSector].metrics[1].value}</span>
                        </div>
                     </div>
                  </div>
@@ -592,9 +739,14 @@ end`);
 
             {/* Right: AI Recommendations Interactive List */}
             <div className="lg:col-span-3 flex flex-col gap-6">
-               <div className="glass-panel p-8 rounded-3xl flex-1 flex flex-col bg-brand-orange/[0.01] hover:border-brand-orange/30 transition-all duration-500">
+               <div 
+                 className="glass-panel p-8 rounded-3xl flex-1 flex flex-col hover:border-brand-orange/30 transition-all duration-500"
+                 style={{ 
+                   backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}01` 
+                 }}
+               >
                   <div className="flex items-center gap-3 mb-8">
-                     <Sparkles className="w-5 h-5 text-brand-orange" />
+                     <Sparkles className="w-5 h-5" style={{ color: DEMO_SECTORS[demoSector].chartColor }} />
                      <h3 className="text-[11px] font-bold text-white uppercase tracking-widest">AI Board Insight</h3>
                   </div>
                   
@@ -618,12 +770,17 @@ end`);
                     ].map((rec, i) => (
                       <div key={i} className={`p-5 rounded-2xl border transition-all cursor-default ${
                         rec.active 
-                          ? "bg-brand-orange/5 border-brand-orange/20 shadow-lg shadow-brand-orange/5" 
+                          ? "shadow-lg" 
                           : "bg-white/[0.01] border-white/5 opacity-50 hover:opacity-100 hover:bg-white/[0.03]"
-                      }`}>
+                      }`}
+                      style={rec.active ? {
+                        backgroundColor: `${DEMO_SECTORS[demoSector].chartColor}0d`,
+                        borderColor: `${DEMO_SECTORS[demoSector].chartColor}33`,
+                        boxShadow: `0 10px 15px -3px ${DEMO_SECTORS[demoSector].chartColor}0a`
+                      } : undefined}>
                          <div className="flex justify-between items-center mb-2">
                            <h4 className="text-xs font-bold text-white">{rec.title}</h4>
-                           {rec.active && <div className="w-1.5 h-1.5 rounded-full bg-brand-orange animate-pulse"></div>}
+                           {rec.active && <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: DEMO_SECTORS[demoSector].chartColor }}></div>}
                          </div>
                          <p className="text-[11px] text-neutral-400 leading-relaxed font-medium">{rec.desc}</p>
                       </div>
