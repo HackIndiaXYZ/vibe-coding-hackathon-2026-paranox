@@ -486,7 +486,7 @@ export default function IsometricWorld({ sector, stats, onChangeStat, initialBud
 
     setBuildings(freshBuildings);
     setActiveConstructLog(`GRID RECONSTRUCTED: SYNCING ACCOUNT METRICS. POPULATED ${freshBuildings.length} GRAPHIC MODELS.`);
-  }, [sector, stats]);
+  }, [sector]);
 
   // Periodic visual simulation (ticks for income + flying drones paths)
   useEffect(() => {

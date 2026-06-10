@@ -71,6 +71,9 @@ export default function App() {
     "&gt; [13:58] LIQUIDITY MATRIX SECURED AT 84%.",
     "&gt; [13:45] RESEARCH COEFFICIENT NOMINAL [PEAK_OUTPUT_01].",
   ]);
+  const [restLogs, setRestLogs] = useState<string[]>([]);
+  const [agriLogs, setAgriLogs] = useState<string[]>([]);
+  const [healthLogs, setHealthLogs] = useState<string[]>([]);
 
   const [simulationLoading, setSimulationLoading] = useState(false);
   const [toasts, setToasts] = useState<{ id: number; message: string; type: "success" | "info" }[]>([]);
@@ -151,7 +154,15 @@ export default function App() {
     });
 
     if (data.logs && data.logs.length > 0) {
-      setEduLogs((prev) => [...data.logs, ...prev].slice(0, 10));
+      const logSetter = {
+        EDUCATION: setEduLogs,
+        RESTAURANT: setRestLogs,
+        AGRICULTURE: setAgriLogs,
+        HEALTHCARE: setHealthLogs,
+      }[activeSector];
+      if (logSetter) {
+        logSetter((prev) => [...data.logs, ...prev].slice(0, 10));
+      }
     }
     addToast("Data Synchronized", "success");
   };
@@ -353,8 +364,8 @@ export default function App() {
                         onChangeStat={(updater) =>
                           setSimulationStats((prev) => ({
                             ...prev,
-                            educationLiquidity: updater.liquidity !== undefined ? updater.liquidity : prev.educationLiquidity,
-                            educationRetention: updater.retention !== undefined ? updater.retention : prev.educationRetention,
+                            educationLiquidity: updater.liquidity ?? prev.educationLiquidity,
+                            educationRetention: updater.retention ?? prev.educationRetention,
                           }))
                         }
                       />
@@ -378,7 +389,7 @@ export default function App() {
                           kitchenLoad: simulationStats.restaurantKitchenLoad,
                           totalEvaluation: simulationStats.totalEvaluation,
                         }}
-                        logs={eduLogs}
+                        logs={restLogs}
                         loading={simulationLoading}
                         onChangeStat={(updater) =>
                           setSimulationStats((prev) => ({
@@ -410,15 +421,15 @@ export default function App() {
                           cropYieldDelta: simulationStats.agricultureCropYieldDelta,
                           totalEvaluation: simulationStats.totalEvaluation,
                         }}
-                        logs={eduLogs}
+                        logs={agriLogs}
                         loading={simulationLoading}
                         onChangeStat={(updater) =>
                           setSimulationStats((prev) => ({
                             ...prev,
-                            agricultureWaterReserves: updater.waterReserves !== undefined ? updater.waterReserves : prev.agricultureWaterReserves,
-                            agricultureHydroponicCount: updater.hydroponicCount !== undefined ? updater.hydroponicCount : prev.agricultureHydroponicCount,
-                            agricultureHarvestDronesCount: updater.harvestDronesCount !== undefined ? updater.harvestDronesCount : prev.agricultureHarvestDronesCount,
-                            cropYieldDelta: updater.cropYieldDelta !== undefined ? updater.cropYieldDelta : prev.agricultureCropYieldDelta,
+                            agricultureWaterReserves: updater.waterReserves ?? prev.agricultureWaterReserves,
+                            agricultureHydroponicCount: updater.hydroponicCount ?? prev.agricultureHydroponicCount,
+                            agricultureHarvestDronesCount: updater.harvestDronesCount ?? prev.agricultureHarvestDronesCount,
+                            cropYieldDelta: updater.cropYieldDelta ?? prev.agricultureCropYieldDelta,
                           }))
                         }
                       />
